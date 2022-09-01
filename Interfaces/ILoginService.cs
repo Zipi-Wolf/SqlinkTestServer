@@ -10,5 +10,6 @@ namespace SqlinkTest.Interfaces
     public interface ILoginService
     {
         Task<User> AuthenticateUser(UserLoginRequest login);
+        public string GenerateJSONWebToken();
     }
 }
