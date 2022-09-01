@@ -8,6 +8,7 @@ namespace SqlinkTest.Models
     public class Project :BaseEntity
     {
         public string id { get; set; }
+        public string userId { get; set; }//FK
         public string name { get; set; }
         public int score { get; set; }
         public int durationInDays { get; set; }

@@ -47,6 +47,7 @@ namespace SqlinkTest
                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(Configuration["Jwt:Key"]))
                    };
                });
+            services.AddCors();
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
@@ -54,6 +55,7 @@ namespace SqlinkTest
             });
             //add separate class if many
             services.AddScoped<IProjectsService, ProjectsService>();
+            services.AddScoped<ILoginService, LoginService>();
             services.AddScoped(typeof(IAsyncRepository<>), typeof(EFRepository<>));
             services.AddDbContext<Context>(options =>
             {
@@ -77,10 +79,23 @@ namespace SqlinkTest
 
             app.UseAuthorization();
 
+            app.UseCors(x => x
+    .AllowAnyMethod()
+    .AllowAnyHeader()
+    .SetIsOriginAllowed(origin => true) // allow any origin
+    .AllowCredentials()); // allow credentials
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
             });
+
+            //app.UseCors(x => x
+            //.AllowAnyOrigin()
+            //.AllowAnyMethod()
+            //.AllowAnyHeader());
+
+            //app.UseHttpsRedirection();
         }
     }
 }

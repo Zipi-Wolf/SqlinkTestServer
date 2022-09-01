@@ -23,8 +23,6 @@ namespace SqlinkTest.Services
         }
         public async Task<List<Project>> GetProjectsByUser(string id)
         {
-            //var projectsForUser = new List<Project>();
-
             try
             {
                 //projectsForUser = await _projectRepository.ListAllAsync();

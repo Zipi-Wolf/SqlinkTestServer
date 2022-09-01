@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using SqlinkTest.Interfaces;
 using SqlinkTest.Models;
 using SqlinkTest.Models.Dto;
 using System;
@@ -14,27 +15,34 @@ using System.Threading.Tasks;
 
 namespace SqlinkTest.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[action]")]
     [ApiController]
     public class LoginController : ControllerBase
     {
         private IConfiguration _config;
+        private readonly ILoginService _loginService;
 
-        public LoginController(IConfiguration config)
+        public LoginController(IConfiguration config, ILoginService loginService)
         {
             _config = config;
+            _loginService = loginService;
         }
         [AllowAnonymous]
+        [ActionName("Login")]
         [HttpPost]
-        public IActionResult Login([FromBody] UserLoginRequest login)
+        public async Task<IActionResult> Login([FromBody] UserLoginRequest login)
         {
             IActionResult response = Unauthorized();
-            var user = AuthenticateUser(login);
+            var user = await _loginService.AuthenticateUser(login);
 
             if (user != null)
             {
                 var tokenString = GenerateJSONWebToken();
-                response = Ok(new { token = tokenString });
+                response = Ok(new LoginResponse
+                {
+                    Token = tokenString,
+                    personalDetails =new User { id = user.id, name = user.name, team = user.team, joinedAt = user.joinedAt, avatar = user.avatar }
+                });
             }
 
             return response;
@@ -54,18 +62,7 @@ namespace SqlinkTest.Controllers
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
-        private User AuthenticateUser(UserLoginRequest login)
-        {
-            User user = null;
 
-            //Validate the User Credentials
-            //Check if password rigth 
-            if (login.email == "Jignesh")
-            {
-                user = new User{ name = "Jignesh Trivedi", team = "test.btest@gmail.com" };
-            }
-            return user;
-        }
     }
 
 }

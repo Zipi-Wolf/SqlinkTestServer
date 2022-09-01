@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SqlinkTest.Interfaces;
 using SqlinkTest.Models;
@@ -9,8 +10,9 @@ using System.Threading.Tasks;
 
 namespace SqlinkTest.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[action]")]
     [ApiController]
+    [Authorize]
     public class ProjectsController : ControllerBase
     {
 
